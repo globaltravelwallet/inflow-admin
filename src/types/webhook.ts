@@ -22,6 +22,7 @@ export interface WebhookOrganization {
   rcNumber: string | null;
   ownerId: string;
   isActive: boolean;
+  customerIds: Record<string, string> | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,12 +42,23 @@ export interface WebhookLog {
   nextRetryAt: string | null;
   errorMessage: string | null;
   createdAt: string;
-  endpoint: WebhookEndpointRef;
+  endpoint: WebhookEndpointFull | null;
+  organization: WebhookOrganization | null;
 }
 
-export interface WebhookEndpointRef {
+export interface WebhookEndpointFull {
   id: string;
   organizationId: string;
   url: string;
+  description: string | null;
+  secret: string;
+  events: string[];
   isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Single webhook log API response wrapper */
+export interface WebhookLogResponse {
+  log: WebhookLog;
 }

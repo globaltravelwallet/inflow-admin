@@ -21,6 +21,10 @@ const labelMap: Record<string, string> = {
   webhooks: "Webhooks",
 };
 
+function isUUID(s: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+}
+
 export function BreadcrumbNav() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
@@ -30,7 +34,7 @@ export function BreadcrumbNav() {
       <BreadcrumbList>
         {segments.map((segment, index) => {
           const href = "/" + segments.slice(0, index + 1).join("/");
-          const label = labelMap[segment] || segment;
+          const label = labelMap[segment] || (isUUID(segment) ? "Detail" : segment);
           const isLast = index === segments.length - 1;
 
           return (

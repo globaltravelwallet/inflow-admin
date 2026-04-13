@@ -24,6 +24,7 @@ const statusStyles: Record<string, string> = {
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
+  if (!status) return null;
   const normalized = status.toLowerCase();
   const style =
     statusStyles[normalized] ||

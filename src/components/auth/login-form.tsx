@@ -89,7 +89,7 @@ export function LoginForm() {
         </div>
       )}
 
-      <Button type="submit" className="w-full mt-2" disabled={isLoading || isLocked}>
+      <Button type="submit" className="w-full mt-2 py-6" disabled={isLoading || isLocked}>
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

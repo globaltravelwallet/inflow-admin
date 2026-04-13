@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { DataTablePagination } from "@/components/shared/data-table-pagination";
@@ -34,6 +35,7 @@ interface WebhookLogsResponse {
 }
 
 export default function WebhooksPage() {
+  const router = useRouter();
   const [logsPage, setLogsPage] = useState(1);
   const [logsLimit, setLogsLimit] = useState(20);
   const [resendDialog, setResendDialog] = useState<{
@@ -205,6 +207,7 @@ export default function WebhooksPage() {
             isLoading={logsLoading}
             emptyTitle="No delivery logs"
             emptyDescription="No webhook delivery logs found."
+            onRowClick={(row) => router.push(`/dashboard/webhooks/${row.id}`)}
           />
           {logsData && logsData.totalPages > 0 && (
             <DataTablePagination
