@@ -16,7 +16,8 @@ interface AuthContextType {
   user: AdminUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ requiresOtp: boolean }>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
   rateLimitInfo: { locked: boolean; remainingSeconds: number };
 }
@@ -66,8 +67,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [lockoutEnd]);
 
+  const applyToken = useCallback((token: string) => {
+    setToken(token);
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    setUser({
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
+    });
+  }, []);
+
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<{ requiresOtp: boolean }> => {
       if (lockoutEnd && Date.now() < lockoutEnd) {
         throw new Error(
           `Too many failed attempts. Please try again in ${remainingSeconds} seconds.`
@@ -80,18 +91,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email,
           password,
         });
-        const { token } = response.data;
-        setToken(token);
 
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        setUser({
-          userId: payload.userId,
-          email: payload.email,
-          role: payload.role,
-        });
+        // Credentials were accepted — clear the client-side lockout counter.
         setFailedAttempts(0);
         setLockoutEnd(null);
-        router.push("/dashboard");
+
+        // Admin login is a two-step OTP flow: step 1 emails a code and returns
+        // `requiresOtp` with no token. (When OTP is disabled server-side, a
+        // token comes back immediately and we can log in right away.)
+        const { token, requiresOtp } = response.data ?? {};
+        if (token) {
+          applyToken(token);
+          router.push("/dashboard");
+          return { requiresOtp: false };
+        }
+        return { requiresOtp: !!requiresOtp };
       } catch (error: unknown) {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
@@ -122,7 +136,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [failedAttempts, lockoutEnd, remainingSeconds, router]
+    [applyToken, failedAttempts, lockoutEnd, remainingSeconds, router]
+  );
+
+  const verifyOtp = useCallback(
+    async (email: string, otp: string): Promise<void> => {
+      setIsLoading(true);
+      try {
+        const response = await api.post("/admin/auth/login/verify", {
+          email,
+          otp,
+        });
+        const { token } = response.data ?? {};
+        if (!token) {
+          throw new Error("Verification failed. Please try again.");
+        }
+        applyToken(token);
+        router.push("/dashboard");
+      } catch (error: unknown) {
+        if (
+          error &&
+          typeof error === "object" &&
+          "response" in error &&
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message
+        ) {
+          throw new Error(
+            (error as { response: { data: { message: string } } }).response.data
+              .message
+          );
+        }
+        if (error instanceof Error) throw error;
+        throw new Error("Invalid or expired verification code");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [applyToken, router]
   );
 
   const logout = useCallback(() => {
@@ -138,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated: !!user,
         login,
+        verifyOtp,
         logout,
         rateLimitInfo: {
           locked: !!lockoutEnd && Date.now() < lockoutEnd,

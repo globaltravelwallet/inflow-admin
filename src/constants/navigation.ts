@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   Building2,
+  ShieldCheck,
   ArrowLeftRight,
   CreditCard,
   Banknote,
@@ -12,6 +13,7 @@ import {
 export const navItems = [
   { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { title: "Organizations", href: "/dashboard/organizations", icon: Building2 },
+  { title: "KYC Requests", href: "/dashboard/kyc", icon: ShieldCheck },
   {
     title: "Transactions",
     href: "/dashboard/transactions",
