@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import {
   Sidebar,
@@ -18,13 +17,13 @@ import { navItems } from "@/constants/navigation";
 import { useAuth } from "@/hooks/use-auth";
 
 export function AppSidebar() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const { user, logout } = useAuth();
 
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border px-6 py-4">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link to="/dashboard" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-sm font-bold text-primary-foreground">IF</span>
           </div>
@@ -44,7 +43,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.href} >
                     <SidebarMenuButton
                       isActive={isActive}
-                      render={<Link href={item.href} />}
+                      render={<Link to={item.href} />}
                       className="py-5"
                     >
                       <item.icon className="h-4 w-4" />

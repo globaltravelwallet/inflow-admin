@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { WebhookLogResponse } from "@/types/webhook";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,13 +21,9 @@ import { ArrowLeft, RefreshCw, Webhook, Building2, Shield } from "lucide-react";
 import api from "@/lib/axios";
 import { toast } from "sonner";
 
-export default function WebhookLogDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function WebhookLogDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data, isLoading, refetch } = useApi<WebhookLogResponse>(
     `/admin/webhooks/logs/${id}`
   );
@@ -67,7 +63,7 @@ export default function WebhookLogDetailPage({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/dashboard/webhooks")}
+          onClick={() => navigate("/dashboard/webhooks")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>

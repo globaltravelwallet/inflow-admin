@@ -7,7 +7,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import api from "@/lib/axios";
 import { setToken, clearToken, getToken } from "@/lib/auth";
 import type { AdminUser } from "@/types/auth";
@@ -28,7 +28,7 @@ const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 60;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [user, setUser] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [failedAttempts, setFailedAttempts] = useState(0);
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { token, requiresOtp } = response.data ?? {};
         if (token) {
           applyToken(token);
-          router.push("/dashboard");
+          navigate("/dashboard");
           return { requiresOtp: false };
         }
         return { requiresOtp: !!requiresOtp };
@@ -136,7 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [applyToken, failedAttempts, lockoutEnd, remainingSeconds, router]
+    [applyToken, failedAttempts, lockoutEnd, remainingSeconds, navigate]
   );
 
   const verifyOtp = useCallback(
@@ -152,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error("Verification failed. Please try again.");
         }
         applyToken(token);
-        router.push("/dashboard");
+        navigate("/dashboard");
       } catch (error: unknown) {
         if (
           error &&
@@ -172,14 +172,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [applyToken, router]
+    [applyToken, navigate]
   );
 
   const logout = useCallback(() => {
     clearToken();
     setUser(null);
-    router.push("/login");
-  }, [router]);
+    navigate("/login");
+  }, [navigate]);
 
   return (
     <AuthContext.Provider

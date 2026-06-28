@@ -1,7 +1,6 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { Notification } from "@/types/notification";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,13 +10,9 @@ import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { ArrowLeft, Bell, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-export default function NotificationDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function NotificationDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: notification, isLoading } = useApi<Notification>(
     `/admin/notifications/${id}`
   );
@@ -45,7 +40,7 @@ export default function NotificationDetailPage({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/dashboard/notifications")}
+          onClick={() => navigate("/dashboard/notifications")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>

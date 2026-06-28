@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -29,7 +29,7 @@ type OrgAction = "approve" | "block" | "unblock";
 
 export default function OrganizationsPage() {
   const { data, isLoading, refetch } = useApi<Organization[]>("/admin/organizations");
-  const router = useRouter();
+  const navigate = useNavigate();
   const [actionDialog, setActionDialog] = useState<{
     open: boolean;
     org: Organization | null;
@@ -103,7 +103,7 @@ export default function OrganizationsPage() {
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/dashboard/organizations/${row.id}`);
+                navigate(`/dashboard/organizations/${row.id}`);
               }}
             >
               View Details
@@ -153,7 +153,7 @@ export default function OrganizationsPage() {
         isLoading={isLoading}
         emptyTitle="No organizations"
         emptyDescription="There are no organizations to display."
-        onRowClick={(row) => router.push(`/dashboard/organizations/${row.id}`)}
+        onRowClick={(row) => navigate(`/dashboard/organizations/${row.id}`)}
       />
 
       <Dialog

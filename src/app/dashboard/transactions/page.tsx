@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { DataTablePagination } from "@/components/shared/data-table-pagination";
@@ -32,7 +32,7 @@ const txStatuses = ["pending", "completed", "failed", "cancelled", "reversed"];
 const txSources = ["internal", "plaid", "flutterwave"];
 
 export default function TransactionsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [typeFilter, setTypeFilter] = useState("");
@@ -202,7 +202,7 @@ export default function TransactionsPage() {
             isLoading={isLoading}
             emptyTitle="No transactions"
             emptyDescription="No transactions match your filters."
-            onRowClick={(row) => router.push(`/dashboard/transactions/${row.id}`)}
+            onRowClick={(row) => navigate(`/dashboard/transactions/${row.id}`)}
           />
 
           {data && (data as TransactionsResponse).totalPages > 0 && (

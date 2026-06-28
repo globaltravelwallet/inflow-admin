@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { DataTablePagination } from "@/components/shared/data-table-pagination";
@@ -49,7 +49,7 @@ const resourceTypes = [
 ];
 
 export default function AuditLogsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(50);
   const [actionFilter, setActionFilter] = useState<string>("");
@@ -177,7 +177,7 @@ export default function AuditLogsPage() {
         isLoading={isLoading}
         emptyTitle="No audit logs"
         emptyDescription="There are no audit logs matching your filters."
-        onRowClick={(row) => router.push(`/dashboard/logs/${row.id}`)}
+        onRowClick={(row) => navigate(`/dashboard/logs/${row.id}`)}
       />
 
       {data && data.totalPages > 0 && (

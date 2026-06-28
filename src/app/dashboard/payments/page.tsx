@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { DataTablePagination } from "@/components/shared/data-table-pagination";
@@ -28,7 +28,7 @@ interface PaymentsResponse {
 const regions = ["us", "eu", "uk"];
 
 export default function PaymentsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [statusFilter, setStatusFilter] = useState("");
@@ -169,7 +169,7 @@ export default function PaymentsPage() {
             isLoading={isLoading}
             emptyTitle="No payments"
             emptyDescription="No payments match your filters."
-            onRowClick={(row) => router.push(`/dashboard/payments/${row.id}`)}
+            onRowClick={(row) => navigate(`/dashboard/payments/${row.id}`)}
           />
 
           {data && (data as PaymentsResponse).totalPages > 0 && (

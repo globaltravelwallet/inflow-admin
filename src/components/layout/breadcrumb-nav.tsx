@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,7 +26,7 @@ function isUUID(s: string) {
 }
 
 export function BreadcrumbNav() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const segments = pathname.split("/").filter(Boolean);
 
   return (
@@ -44,7 +44,9 @@ export function BreadcrumbNav() {
                 {isLast ? (
                   <BreadcrumbPage>{label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={href}>{label}</BreadcrumbLink>
+                  <BreadcrumbLink render={<Link to={href} />}>
+                    {label}
+                  </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
             </Fragment>

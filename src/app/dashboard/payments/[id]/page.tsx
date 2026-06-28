@@ -1,7 +1,6 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { Payment } from "@/types/payment";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,13 +10,9 @@ import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ArrowLeft, CreditCard, User, Building2, ExternalLink } from "lucide-react";
 
-export default function PaymentDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function PaymentDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: payment, isLoading, error } = useApi<Payment>(
     `/admin/payments/${id}`
   );
@@ -27,7 +22,7 @@ export default function PaymentDetailPage({
   if (error || !payment) {
     return (
       <div className="space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/payments")}>
+        <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard/payments")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Payments
         </Button>
@@ -43,7 +38,7 @@ export default function PaymentDetailPage({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard/payments")}>
+        <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard/payments")}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1">
@@ -140,7 +135,6 @@ export default function PaymentDetailPage({
               {payment.customer.identityImage && (
                 <div className="pt-2">
                   <p className="text-xs text-muted-foreground mb-2">Identity Document</p>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={payment.customer.identityImage}
                     alt="Identity Document"

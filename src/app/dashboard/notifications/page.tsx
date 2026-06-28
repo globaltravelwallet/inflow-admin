@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { DataTablePagination } from "@/components/shared/data-table-pagination";
@@ -34,7 +34,7 @@ const notificationTypes = [
 ];
 
 export default function NotificationsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [typeFilter, setTypeFilter] = useState<string>("");
@@ -128,7 +128,7 @@ export default function NotificationsPage() {
         isLoading={isLoading}
         emptyTitle="No notifications"
         emptyDescription="There are no notifications to display."
-        onRowClick={(row) => router.push(`/dashboard/notifications/${row.id}`)}
+        onRowClick={(row) => navigate(`/dashboard/notifications/${row.id}`)}
       />
 
       {data && data.totalPages > 0 && (

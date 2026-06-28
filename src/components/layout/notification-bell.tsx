@@ -2,7 +2,7 @@
 
 import { Bell } from "lucide-react";
 import { useApi } from "@/hooks/use-api";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 interface NotificationResponse {
   notifications: unknown[];
@@ -19,7 +19,7 @@ export function NotificationBell() {
 
   return (
     <Link
-      href="/dashboard/notifications"
+      to="/dashboard/notifications"
       className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-muted hover:text-foreground"
     >
       <Bell className="h-4 w-4" />

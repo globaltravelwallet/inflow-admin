@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { CancelPayoutDialog } from "@/components/payouts/cancel-payout-dialog";
 
 export default function PayoutsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { data, isLoading, refetch } = useApi<PayoutsResponse>("/admin/payouts");
   const { data: orgs } = useApi<Organization[]>("/admin/organizations");
   
@@ -132,7 +132,7 @@ export default function PayoutsPage() {
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/dashboard/payouts/${row.id}`);
+                navigate(`/dashboard/payouts/${row.id}`);
               }}
             >
               <ExternalLink className="mr-2 h-4 w-4" />
@@ -180,7 +180,7 @@ export default function PayoutsPage() {
         isLoading={isLoading}
         emptyTitle="No payouts found"
         emptyDescription="There are no payouts matching your criteria."
-        onRowClick={(row) => router.push(`/dashboard/payouts/${row.id}`)}
+        onRowClick={(row) => navigate(`/dashboard/payouts/${row.id}`)}
       />
 
       <CancelPayoutDialog

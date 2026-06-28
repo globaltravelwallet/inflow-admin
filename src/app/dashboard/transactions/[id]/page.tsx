@@ -1,7 +1,6 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { Transaction } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,13 +11,9 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ArrowLeft, ArrowLeftRight, CreditCard, User, Building2, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-export default function TransactionDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function TransactionDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: tx, isLoading, error } = useApi<Transaction>(
     `/admin/transactions/${id}`
   );
@@ -28,7 +23,7 @@ export default function TransactionDetailPage({
   if (error || !tx) {
     return (
       <div className="space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/transactions")}>
+        <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard/transactions")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Transactions
         </Button>
@@ -44,7 +39,7 @@ export default function TransactionDetailPage({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard/transactions")}>
+        <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard/transactions")}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1">

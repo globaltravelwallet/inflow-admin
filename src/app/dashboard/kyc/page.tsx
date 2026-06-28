@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { DataTable, type Column } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -37,7 +37,7 @@ function ownerName(kyc: CompanyKyc): string {
 
 export default function KycPage() {
   const { data, isLoading, refetch } = useApi<CompanyKyc[]>("/admin/kyc");
-  const router = useRouter();
+  const navigate = useNavigate();
   const [actionDialog, setActionDialog] = useState<{
     open: boolean;
     kyc: CompanyKyc | null;
@@ -124,7 +124,7 @@ export default function KycPage() {
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/dashboard/kyc/${row.id}`);
+                navigate(`/dashboard/kyc/${row.id}`);
               }}
             >
               View Details
@@ -170,7 +170,7 @@ export default function KycPage() {
         isLoading={isLoading}
         emptyTitle="No pending KYC requests"
         emptyDescription="There are no organization KYC requests awaiting review."
-        onRowClick={(row) => router.push(`/dashboard/kyc/${row.id}`)}
+        onRowClick={(row) => navigate(`/dashboard/kyc/${row.id}`)}
       />
 
       <Dialog

@@ -49,6 +49,7 @@
 }
 
 :root {
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius: 0.625rem;
   /* CPI Custom Colors */
   --background: #ffffff;

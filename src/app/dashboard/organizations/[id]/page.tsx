@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { Organization } from "@/types/organization";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,13 +22,9 @@ import { toast } from "sonner";
 
 type OrgAction = "approve" | "block" | "unblock";
 
-export default function OrganizationDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function OrganizationDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: org, isLoading, refetch } = useApi<Organization>(
     `/admin/organizations/${id}`
   );
@@ -73,7 +69,7 @@ export default function OrganizationDetailPage({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push("/dashboard/organizations")}
+            onClick={() => navigate("/dashboard/organizations")}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>

@@ -1,7 +1,6 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { AuditLog } from "@/types/audit-log";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,13 +9,9 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { ArrowLeft, ScrollText, User, Monitor } from "lucide-react";
 
-export default function AuditLogDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function AuditLogDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: log, isLoading } = useApi<AuditLog>(`/admin/logs/${id}`);
 
   if (isLoading) return <LoadingSkeleton rows={6} columns={2} />;
@@ -39,7 +34,7 @@ export default function AuditLogDetailPage({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/dashboard/logs")}
+          onClick={() => navigate("/dashboard/logs")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>

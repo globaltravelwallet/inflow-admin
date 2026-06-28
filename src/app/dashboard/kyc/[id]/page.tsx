@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import type { CompanyKyc } from "@/types/kyc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,13 +30,9 @@ const DOCUMENTS: { label: string; key: keyof CompanyKyc }[] = [
   { label: "Valid ID", key: "validIdUrl" },
 ];
 
-export default function KycDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function KycDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: kyc, isLoading, refetch } = useApi<CompanyKyc>(
     `/admin/kyc/${id}`
   );
@@ -110,7 +106,7 @@ export default function KycDetailPage({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push("/dashboard/kyc")}
+            onClick={() => navigate("/dashboard/kyc")}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>

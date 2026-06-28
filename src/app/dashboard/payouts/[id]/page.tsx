@@ -1,7 +1,6 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "@/hooks/use-api";
 import { StatusBadge } from "@/components/shared/status-badge";
 import type { Payout } from "@/types/payout";
@@ -14,9 +13,9 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { CancelPayoutDialog } from "@/components/payouts/cancel-payout-dialog";
 
-export default function PayoutDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const router = useRouter();
+export default function PayoutDetailPage() {
+  const { id } = useParams() as { id: string };
+  const navigate = useNavigate();
   const { data: payout, isLoading, refetch } = useApi<Payout>(`/admin/payouts/${id}`);
   const [cancelOpen, setCancelOpen] = useState(false);
 
@@ -52,7 +51,7 @@ export default function PayoutDetailPage({ params }: { params: Promise<{ id: str
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold">Payout not found</h2>
-        <Button variant="link" onClick={() => router.back()}>
+        <Button variant="link" onClick={() => navigate(-1)}>
           Go back
         </Button>
       </div>
@@ -67,7 +66,7 @@ export default function PayoutDetailPage({ params }: { params: Promise<{ id: str
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-bold">Payout Details</h1>
@@ -184,7 +183,7 @@ export default function PayoutDetailPage({ params }: { params: Promise<{ id: str
                     variant="outline" 
                     size="sm" 
                     className="w-full"
-                    onClick={() => router.push(`/dashboard/organizations/${payout.organizationId}`)}
+                    onClick={() => navigate(`/dashboard/organizations/${payout.organizationId}`)}
                    >
                      View Organization
                    </Button>
